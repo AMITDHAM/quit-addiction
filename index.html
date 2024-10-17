@@ -78,7 +78,7 @@
   <script>
     let quitTime = localStorage.getItem('quitTime');
     let interval;
-    let totalProgress = 1000000; // Example max value for progress (adjust as needed)
+    const totalMillisecondsInHour = 60 * 60 * 1000; // 60 minutes in milliseconds
 
     function startTimer() {
       if (!quitTime) {
@@ -113,8 +113,11 @@
         document.getElementById('timeDisplay').innerText =
           `Time Since Quit: ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
 
-        // Update circular progress
-        const progress = (elapsed % totalProgress) / totalProgress * 100;
+        // Calculate progress for the current 60-minute period
+        const timeSinceHourStart = elapsed % totalMillisecondsInHour;
+        const progress = (timeSinceHourStart / totalMillisecondsInHour) * 100;
+
+        // Update circular progress bar
         document.getElementById('progressBar').style.setProperty('--progress', progress);
       }, 1000);
     }
