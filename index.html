@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Quit Timer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 40px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      border-radius: 10px;
+      width: 300px;
+    }
+    h1 {
+      color: #333;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    .time-display {
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+    .circular-progress {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+      border-radius: 50%;
+      background: conic-gradient(#28a745 calc(var(--progress) * 1%), #e5e5e5 0);
+    }
+    .circular-progress::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      background-color: white;
+      border-radius: 50%;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Quit Addiction Timer</h1>
+    <div class="circular-progress" id="progressBar" style="--progress: 0;"></div>
+    <div class="time-display" id="timeDisplay">Time Since Quit: 0 days, 0 hours, 0 minutes, 0 seconds</div>
+    <button onclick="startTimer()">Start Timer</button>
+    <button onclick="resetTimer()">Reset Timer</button>
+  </div>
+
+  <script>
+    let quitTime = localStorage.getItem('quitTime');
+    let interval;
+    let totalProgress = 1000000; // Example max value for progress (adjust as needed)
+
+    function startTimer() {
+      if (!quitTime) {
+        quitTime = new Date();
+        localStorage.setItem('quitTime', quitTime);
+        updateTimer();
+      }
+      if (!interval) {
+        updateTimer();
+      }
+    }
+
+    function resetTimer() {
+      quitTime = new Date();
+      localStorage.setItem('quitTime', quitTime);
+      clearInterval(interval);
+      interval = null;
+      document.getElementById('progressBar').style.setProperty('--progress', 0);
+      updateTimer();
+    }
+
+    function updateTimer() {
+      interval = setInterval(function () {
+        const now = new Date();
+        const elapsed = now - new Date(quitTime);
+
+        const days = Math.floor(elapsed / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((elapsed / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((elapsed / (1000 * 60)) % 60);
+        const seconds = Math.floor((elapsed / 1000) % 60);
+
+        document.getElementById('timeDisplay').innerText =
+          `Time Since Quit: ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+
+        // Update circular progress
+        const progress = (elapsed % totalProgress) / totalProgress * 100;
+        document.getElementById('progressBar').style.setProperty('--progress', progress);
+      }, 1000);
+    }
+
+    // If quit time exists in local storage, start the timer automatically
+    if (quitTime) {
+      updateTimer();
+    }
+  </script>
+</body>
+</html>
