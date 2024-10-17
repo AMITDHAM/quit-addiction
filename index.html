@@ -8,7 +8,8 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
+      background-color: #121212;
+      color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -16,29 +17,31 @@
       margin: 0;
     }
     .container {
-      background-color: white;
+      background-color: #1e1e1e;
       padding: 40px;
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.6);
       text-align: center;
       border-radius: 10px;
-      width: 300px;
+      width: 320px;
     }
     h1 {
-      color: #333;
-      font-size: 1.5rem;
+      color: #fff;
+      font-size: 1.7rem;
       margin-bottom: 20px;
     }
     .time-display {
       font-size: 1.2rem;
       margin-top: 10px;
+      color: #ccc;
     }
     .circular-progress {
       position: relative;
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
       margin: 20px auto;
       border-radius: 50%;
-      background: conic-gradient(#28a745 calc(var(--progress) * 1%), #e5e5e5 0);
+      background: conic-gradient(#28a745 calc(var(--progress) * 1%), #333 0);
+      box-shadow: 0 0 15px rgba(40, 167, 69, 0.6);
     }
     .circular-progress::before {
       content: '';
@@ -46,10 +49,19 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 80px;
-      height: 80px;
-      background-color: white;
+      width: 90px;
+      height: 90px;
+      background-color: #1e1e1e;
       border-radius: 50%;
+      border: 2px solid #333;
+    }
+    .circular-progress .inner-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.2rem;
+      color: #28a745;
     }
     button {
       padding: 10px 20px;
@@ -69,7 +81,9 @@
 <body>
   <div class="container">
     <h1>Quit Addiction Timer</h1>
-    <div class="circular-progress" id="progressBar" style="--progress: 0;"></div>
+    <div class="circular-progress" id="progressBar" style="--progress: 0;">
+      <div class="inner-text">0%</div>
+    </div>
     <div class="time-display" id="timeDisplay">0 days, 0 hours, 0 minutes, 0 seconds</div>
     <button onclick="startTimer()">Start Timer</button>
     <button onclick="resetTimer()">Reset Timer</button>
@@ -97,6 +111,7 @@
       clearInterval(interval);
       interval = null;
       document.getElementById('progressBar').style.setProperty('--progress', 0);
+      document.querySelector('.inner-text').innerText = '0%';
       updateTimer();
     }
 
@@ -117,8 +132,9 @@
         const timeSinceHourStart = elapsed % totalMillisecondsInHour;
         const progress = (timeSinceHourStart / totalMillisecondsInHour) * 100;
 
-        // Update circular progress bar
+        // Update circular progress bar and inner text
         document.getElementById('progressBar').style.setProperty('--progress', progress);
+        document.querySelector('.inner-text').innerText = `${Math.floor(progress)}%`;
       }, 1000);
     }
 
